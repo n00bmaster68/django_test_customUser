@@ -60,9 +60,31 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
 	def __str__(self):
 		return self.email
-
+	
 	def has_perm(self, perm, obj=None):
-		return self.is_admin
+		if self.is_admin:
+			return self.is_admin
+			
+		try: 
+			perm = perm.split('.')[1]
 
+			pers = []
+			groups = self.groups.all()
+
+			for group in groups:
+				pers.extend(group.permissions.all())
+			pers = list(pers)
+
+			real_pers = []
+			for per in pers:
+				str_temp = (((str(per)).split('|')[2].split(' ', 1)[1]).split(' ', 1)[1]).replace(" ", "_")
+				real_pers.append(str(str_temp))
+				
+			if perm in real_pers:
+				return True
+		except:
+			return False
+		# group = self.groups.all()[0]
+		
 	def has_module_perms(self, app_label):
-	    return True
+		return self.is_staff

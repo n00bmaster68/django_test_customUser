@@ -8,8 +8,8 @@ class AccountAdmin(UserAdmin):
 	search_fields = ("email", "username", )
 	readonly_fields = ("date_joined", "last_login")
 
-	filter_horizontal = ("groups", "user_permissions", )
-	list_filter = ()
+	filter_horizontal = ("groups", )
+	list_filter = ("groups", "is_active")
 	fieldsets = ()
 
 admin.site.register(Account, AccountAdmin)
